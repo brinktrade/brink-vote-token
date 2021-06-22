@@ -60,34 +60,22 @@ contract BrinkVote is Multicall {
     return _isOwner(owner);
   }
 
-  function grant1000(address account) external onlyOwner() {
-    _grant(account, 1_000_000000000000000000);
-  }
-
-  function grant2000(address account) external onlyOwner() {
-    _grant(account, 2_000_000000000000000000);
-  }
-
-  function grant3000(address account) external onlyOwner() {
-    _grant(account, 3_000_000000000000000000);
-  }
-
-  function addOwner(address owner) external onlyOwner() {
-    require(!_isOwner(owner), "ALREADY_OWNER");
-    _owners[owner] = true;
-  }
-
-  function removeOwner(address owner) external onlyOwner() {
-    require(_isOwner(owner), "CANNOT_REMOVE_NON_OWNER");
-    require(owner != msg.sender, "CANNOT_REMOVE_SELF_OWNER");
-    _owners[owner] = false;
-  }
-
-  function _grant(address account, uint256 amount) internal {
+  function grant(address account, uint256 amount) external onlyOwner {
     require(_balances[account] == 0, "ACCOUNT_HAS_BALANCE");
     _balances[account] = amount;
     _totalGranted += amount;
     require(!_capExceeded(), "CAP_EXCEEDED");
+  }
+
+  function addOwner(address owner) external onlyOwner {
+    require(!_isOwner(owner), "ALREADY_OWNER");
+    _owners[owner] = true;
+  }
+
+  function removeOwner(address owner) external onlyOwner {
+    require(_isOwner(owner), "CANNOT_REMOVE_NON_OWNER");
+    require(owner != msg.sender, "CANNOT_REMOVE_SELF_OWNER");
+    _owners[owner] = false;
   }
 
   function _capExceeded() internal view returns (bool) {
