@@ -16,7 +16,7 @@ contract BrinkVote is Multicall {
   string private constant _symbol = "BVOTE";
   string private constant _name = "Brink Vote";
   uint8 private constant _decimals = 18;
-  uint256 private constant _totalSupply = 5_000_000_000_000000000000000000; // 5 Million
+  uint256 private constant _totalSupply = 5_000_000_000000000000000000; // 5 Million
 
   mapping (address => uint256) private _balances;
   mapping (address => bool) private _owners;
