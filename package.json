@@ -1,0 +1,17 @@
+{
+  "name": "@brinkninja/gov-promo",
+  "version": "0.1.0",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test"
+  },
+  "description": "Non-transferable token for snapshot.org governance",
+  "author": "@brinktrade",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "ethers": "^5.1.0",
+    "hardhat": "^2.1.2",
+    "@resolver-engine/core": "^0.3.3"
+  }
+}
