@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity =0.8.4;
 
-import "./Multicall.sol";
-
 /**
  * @dev BrinkVote is a simple balance ledger created for Brink proposal voting on snapshot.org
  *
@@ -12,7 +10,7 @@ import "./Multicall.sol";
  * This contract was created solely for the purpose of vote signaling. It allows Brink community members to broadcast
  * their opinions on Brink protocol development proposals.
  */
-contract BrinkVote is Multicall {
+contract BrinkVote {
   string private constant _symbol = "BVOTE";
   string private constant _name = "Brink Vote";
   uint8 private constant _decimals = 18;
@@ -61,10 +59,14 @@ contract BrinkVote is Multicall {
   }
 
   function grant(address account, uint256 amount) external onlyOwner {
-    require(_balances[account] == 0, "ACCOUNT_HAS_BALANCE");
-    _balances[account] = amount;
-    _totalGranted += amount;
-    require(!_capExceeded(), "CAP_EXCEEDED");
+    _grant(account, amount);
+  }
+
+  function multigrant(address[] calldata accounts, uint256[] calldata amounts) external onlyOwner {
+    require(accounts.length == amounts.length, "LENGTH_MISMATCH");
+    for(uint8 i = 0; i < accounts.length; i++) {
+      _grant(accounts[i], amounts[i]);
+    }
   }
 
   function addOwner(address owner) external onlyOwner {
@@ -84,5 +86,12 @@ contract BrinkVote is Multicall {
 
   function _isOwner(address owner) internal view returns (bool) {
     return _owners[owner];
+  }
+
+  function _grant(address account, uint256 amount) internal {
+    require(_balances[account] == 0, "ACCOUNT_HAS_BALANCE");
+    _balances[account] = amount;
+    _totalGranted += amount;
+    require(!_capExceeded(), "CAP_EXCEEDED");
   }
 }
