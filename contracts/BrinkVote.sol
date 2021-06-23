@@ -11,7 +11,7 @@ pragma solidity =0.8.4;
  * their opinions on Brink protocol development proposals.
  */
 contract BrinkVote {
-  string private constant _symbol = "BVOTE";
+  string private constant _symbol = "BRINKVOTE";
   string private constant _name = "Brink Vote";
   uint8 private constant _decimals = 18;
   uint256 private constant _totalSupply = 5_000_000_000000000000000000; // 5 Million

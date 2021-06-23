@@ -26,8 +26,8 @@ describe('BrinkVote', function () {
       this.brinkVote = await this.BrinkVote.deploy(this.owner1.address)
     })
 
-    it('should have symbol BVOTE', async function () {
-      expect(await this.brinkVote.symbol()).to.equal('BVOTE')
+    it('should have symbol BRINKVOTE', async function () {
+      expect(await this.brinkVote.symbol()).to.equal('BRINKVOTE')
     })
 
     it('should have name "Brink Vote"', async function () {
