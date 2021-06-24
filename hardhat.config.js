@@ -1,6 +1,7 @@
+require('dotenv').config()
 require('@nomiclabs/hardhat-ethers')
 
-module.exports = {
+let config = {
   networks: {
     hardhat: {
       accounts: {
@@ -10,18 +11,26 @@ module.exports = {
     }
   },
   solidity: {
-    version: '0.8.4',
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 800
-      },
-      metadata: {
-        // do not include the metadata hash, since this is machine dependent
-        // and we want all generated code to be deterministic
-        // https://docs.soliditylang.org/en/v0.7.6/metadata.html
-        bytecodeHash: 'none'
-      },
-    },
+    version: '0.8.4'
   }
 }
+
+if (process.env.GOERLI_CONFIGURED) {
+  config.networks.goerli = {
+    url: process.env.GOERLI_URL,
+    accounts: {
+      mnemonic: process.env.GOERLI_MNEMONIC
+    }
+  }
+}
+
+if (process.env.MAINNET_CONFIGURED) {
+  config.networks.mainnet = {
+    url: process.env.MAINNET_URL,
+    accounts: {
+      mnemonic: process.env.MAINNET_MNEMONIC
+    }
+  }
+}
+
+module.exports = config

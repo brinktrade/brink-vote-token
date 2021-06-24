@@ -1,0 +1,11 @@
+# copy to .env with your secret config
+
+INITIAL_OWNER="<INITIAL_OWNER_ADDRESS>"
+
+GOERLI_CONFIGURED=false
+GOERLI_URL="https://eth-goerli.alchemyapi.io/v2/<YOUR_KEY>"
+GOERLI_MNEMONIC="<YOUR_SEED_PHRASE>"
+
+MAINNET_CONFIGURED=false
+MAINNET_URL="https://eth-mainnet.alchemyapi.io/v2/<YOUR_KEY>"
+MAINNET_MNEMONIC="<YOUR_SEED_PHRASE>"
