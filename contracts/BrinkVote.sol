@@ -91,7 +91,6 @@ contract BrinkVote is IERC20NoTransfer {
   }
 
   function _mint(address account, uint256 amount) internal {
-    require(_balances[account] == 0, "ACCOUNT_HAS_BALANCE");
     _balances[account] = amount;
     _totalSupply += amount;
     require(!_capExceeded(), "CAP_EXCEEDED");

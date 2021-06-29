@@ -89,14 +89,6 @@ describe('BrinkVote', function () {
         await expect(this.brinkVote.grant(this.grantee1.address, this.amount1)).to.be.revertedWith('NOT_OWNER')
       })
     })
-
-    describe('when granting to an address that already has a balance', function () {
-      it('should revert with ACCOUNT_HAS_BALANCE', async function () {
-        this.amount = BN(2000).mul(BN18)
-        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount)
-        await expect(this.brinkVote_owner1.grant(this.grantee1.address, this.amount)).to.be.revertedWith('ACCOUNT_HAS_BALANCE')
-      })
-    })
   
     describe('when grant exceeds the totalSupply', function () {
       it('should revert with CAP_EXCEEDED', async function () {
