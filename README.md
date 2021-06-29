@@ -1,6 +1,10 @@
-# brink-gov-promo
+# brink-vote-token
 
-Contains solidity code for the `BrinkVote.sol` smart contract, a simple balance ledger created for Brink proposal voting on [snapshot.org](https://snapshot.org)
+Contains solidity code for the `BrinkVote.sol` smart contract, a non-transferable token created for Brink proposal voting on [snapshot.org](https://snapshot.org)
+
+### Deployments
+
+TBD
 
 ### Install
 
