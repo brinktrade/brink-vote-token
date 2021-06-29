@@ -1,7 +1,8 @@
 const { ethers } = require('hardhat')
 const {
   BN, BN6, BN18,
-  chaiSolidity
+  chaiSolidity,
+  ZERO_ADDRESS
 } = require('@brinkninja/test-helpers')
 const { expect } = chaiSolidity()
 
@@ -38,16 +39,16 @@ describe('BrinkVote', function () {
       expect(await this.brinkVote.decimals()).to.equal(18)
     })
 
-    it('should have total supply of 5 million', async function () {
-      expect(await this.brinkVote.totalSupply()).to.equal(FIVE_MILLION)
+    it('should have a cap of 5 million', async function () {
+      expect(await this.brinkVote.cap()).to.equal(FIVE_MILLION)
     })
 
     it('should set initial owner', async function () {
       expect(await this.brinkVote.isOwner(this.owner1.address)).to.equal(true)
     })
 
-    it('should set totalGranted to zero', async function () {
-      expect(await this.brinkVote.totalGranted()).to.equal(0)
+    it('should set totalSupply to zero', async function () {
+      expect(await this.brinkVote.totalSupply()).to.equal(0)
     })
   })
 
@@ -61,17 +62,24 @@ describe('BrinkVote', function () {
       beforeEach(async function () {
         this.amount1 = BN(2000).mul(BN18)
         this.amount2 = BN(3000).mul(BN18)
-        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount1)
-        await this.brinkVote_owner1.grant(this.grantee2.address, this.amount2)
       })
 
       it('should increase balance for the address', async function () {
+        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount1)
+        await this.brinkVote_owner1.grant(this.grantee2.address, this.amount2)
         expect(await this.brinkVote.balanceOf(this.grantee1.address)).to.equal(this.amount1)
         expect(await this.brinkVote.balanceOf(this.grantee2.address)).to.equal(this.amount2)
       })
 
-      it('should increase totalGranted', async function () {
-        expect(await this.brinkVote.totalGranted()).to.equal(this.amount1.add(this.amount2))
+      it('should increase totalSupply', async function () {
+        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount1)
+        await this.brinkVote_owner1.grant(this.grantee2.address, this.amount2)
+        expect(await this.brinkVote.totalSupply()).to.equal(this.amount1.add(this.amount2))
+      })
+
+      it('should emit a Transfer event', async function () {
+        await expect(this.brinkVote_owner1.grant(this.grantee1.address, this.amount1))
+          .to.emit(this.brinkVote_owner1, 'Transfer').withArgs(ZERO_ADDRESS, this.grantee1.address, this.amount1)
       })
     })
 
