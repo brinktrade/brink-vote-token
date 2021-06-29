@@ -161,8 +161,7 @@ describe('BrinkVote', function () {
 
   describe('multigrant', function () {
     beforeEach(async function () {
-      this.amount1 = BN(2000).mul(BN18)
-      this.amount2 = BN(3000).mul(BN18)
+      this.amount = BN(2000).mul(BN18)
       this.brinkVote = await this.BrinkVote.deploy(this.owner1.address)
       this.brinkVote_owner1 = await this.BrinkVote.attach(this.brinkVote.address).connect(this.owner1)
     })
@@ -170,26 +169,18 @@ describe('BrinkVote', function () {
     describe('when issuing valid grants', function () {
       it('should issue multiple grants', async function () {
         await this.brinkVote_owner1.multigrant(
-          [this.grantee1.address, this.grantee2.address], [this.amount1, this.amount2]
+          [this.grantee1.address, this.grantee2.address], this.amount
         )
-        expect(await this.brinkVote.balanceOf(this.grantee1.address)).to.equal(this.amount1)
-        expect(await this.brinkVote.balanceOf(this.grantee2.address)).to.equal(this.amount2)
+        expect(await this.brinkVote.balanceOf(this.grantee1.address)).to.equal(this.amount)
+        expect(await this.brinkVote.balanceOf(this.grantee2.address)).to.equal(this.amount)
       })
     })
 
     describe('when called by a non-owner', function () {
       it('should revert with NOT_OWNER', async function () {
         await expect(this.brinkVote.multigrant(
-          [this.grantee1.address, this.grantee2.address], [this.amount1, this.amount2]
+          [this.grantee1.address, this.grantee2.address], this.amount
         )).to.be.revertedWith('NOT_OWNER')
-      })
-    })
-
-    describe('when account and amount array lengths are not equal', function () {
-      it('should revert with LENGTH_MISMATCH', async function () {
-        await expect(this.brinkVote_owner1.multigrant(
-          [this.grantee1.address], [this.amount1, this.amount2]
-        )).to.be.revertedWith('LENGTH_MISMATCH')
       })
     })
   })

@@ -64,10 +64,9 @@ contract BrinkVote is IERC20NoTransfer {
     _mint(account, amount);
   }
 
-  function multigrant(address[] calldata accounts, uint256[] calldata amounts) external onlyOwner {
-    require(accounts.length == amounts.length, "LENGTH_MISMATCH");
+  function multigrant(address[] calldata accounts, uint256 amount) external onlyOwner {
     for(uint8 i = 0; i < accounts.length; i++) {
-      _mint(accounts[i], amounts[i]);
+      _mint(accounts[i], amount);
     }
   }
 
