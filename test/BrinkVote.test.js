@@ -2,7 +2,8 @@ const { ethers } = require('hardhat')
 const {
   BN, BN6, BN18,
   chaiSolidity,
-  ZERO_ADDRESS
+  ZERO_ADDRESS,
+  randomAddress
 } = require('@brinkninja/test-helpers')
 const { expect } = chaiSolidity()
 
@@ -181,6 +182,19 @@ describe('BrinkVote', function () {
         await expect(this.brinkVote.multigrant(
           [this.grantee1.address, this.grantee2.address], this.amount
         )).to.be.revertedWith('NOT_OWNER')
+      })
+    })
+
+    describe.skip('gas cost report', function () {
+      it('log gas cost for multigrant', async function () {
+        let accounts = []
+        for (let i = 0; i < 100; i++) {
+          accounts[i] = (await randomAddress()).address
+        }
+        const tx = await this.brinkVote_owner1.multigrant(accounts, this.amount)
+        const receipt = await ethers.provider.getTransactionReceipt(tx.hash)
+        const gasUsed = receipt.gasUsed.toString()
+        console.log('GAS USED: ', gasUsed)
       })
     })
   })
