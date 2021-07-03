@@ -22,9 +22,15 @@ contract BrinkVote is IERC20NoTransfer {
   mapping (address => bool) private _owners;
 
   uint256 private _totalSupply;
+  bool private _frozen;
 
   modifier onlyOwner() {
     require(_isOwner(msg.sender), "NOT_OWNER");
+    _;
+  }
+
+  modifier notFrozen() {
+    require(!_frozen, "FROZEN");
     _;
   }
 
@@ -56,15 +62,19 @@ contract BrinkVote is IERC20NoTransfer {
     return _cap;
   }
 
+  function frozen() external view returns (bool) {
+    return _frozen;
+  }
+
   function isOwner(address owner) external view returns (bool) {
     return _isOwner(owner);
   }
 
-  function grant(address account, uint256 amount) external onlyOwner {
+  function grant(address account, uint256 amount) external onlyOwner notFrozen {
     _mint(account, amount);
   }
 
-  function multigrant(address[] calldata accounts, uint256 amount) external onlyOwner {
+  function multigrant(address[] calldata accounts, uint256 amount) external onlyOwner notFrozen {
     for(uint8 i = 0; i < accounts.length; i++) {
       _mint(accounts[i], amount);
     }
@@ -79,6 +89,10 @@ contract BrinkVote is IERC20NoTransfer {
     require(_isOwner(owner), "CANNOT_REMOVE_NON_OWNER");
     require(owner != msg.sender, "CANNOT_REMOVE_SELF_OWNER");
     _owners[owner] = false;
+  }
+
+  function freeze() external onlyOwner {
+    _frozen = true;
   }
 
   function _capExceeded() internal view returns (bool) {

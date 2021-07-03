@@ -51,6 +51,10 @@ describe('BrinkVote', function () {
     it('should set totalSupply to zero', async function () {
       expect(await this.brinkVote.totalSupply()).to.equal(0)
     })
+
+    it('should set frozen to false', async function () {
+      expect(await this.brinkVote.frozen()).to.equal(false)
+    })
   })
 
   describe('grant', function () {
@@ -111,6 +115,15 @@ describe('BrinkVote', function () {
       it('should revert with CAP_EXCEEDED', async function () {
         await this.brinkVote_owner1.grant(this.grantee1.address, FOUR_MILLION)
         await expect(this.brinkVote_owner1.grant(this.grantee2.address, THREE_MILLION)).to.be.revertedWith('CAP_EXCEEDED')
+      })
+    })
+
+    describe('when contract is frozen', function () {
+      it('should revert with FROZEN', async function () {
+        this.amount1 = BN(2000).mul(BN18)
+        await this.brinkVote_owner1.freeze()
+        await expect(this.brinkVote_owner1.grant(this.grantee1.address, this.amount1))
+          .to.be.revertedWith('FROZEN')
       })
     })
   })
@@ -176,6 +189,26 @@ describe('BrinkVote', function () {
     })
   })
 
+  describe('freeze', function () {
+    beforeEach(async function () {
+      this.brinkVote = await this.BrinkVote.deploy(this.owner1.address)
+      this.brinkVote_owner1 = await this.BrinkVote.attach(this.brinkVote.address).connect(this.owner1)
+    })
+
+    describe('when called by an owner', function () {
+      it('should set frozen() to true', async function () {
+        await this.brinkVote_owner1.freeze()
+        expect(await this.brinkVote.frozen()).to.equal(true)
+      })
+    })
+
+    describe('when called by a non-owner', function () {
+      it('should revert with NOT_OWNER', async function () {
+        await expect(this.brinkVote.freeze()).to.be.revertedWith('NOT_OWNER')
+      })
+    })
+  })
+
   describe('multigrant', function () {
     beforeEach(async function () {
       this.amount = BN(2000).mul(BN18)
@@ -198,6 +231,16 @@ describe('BrinkVote', function () {
         await expect(this.brinkVote.multigrant(
           [this.grantee1.address, this.grantee2.address], this.amount
         )).to.be.revertedWith('NOT_OWNER')
+      })
+    })
+
+    describe('when contract is frozen', function () {
+      it('should revert with FROZEN', async function () {
+        this.amount = BN(2000).mul(BN18)
+        await this.brinkVote_owner1.freeze()
+        await expect(this.brinkVote_owner1.multigrant(
+          [this.grantee1.address, this.grantee2.address], this.amount
+        )).to.be.revertedWith('FROZEN')
       })
     })
 
