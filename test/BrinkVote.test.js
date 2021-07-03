@@ -84,6 +84,22 @@ describe('BrinkVote', function () {
       })
     })
 
+    describe('when granting multiple times to the same address', function () {
+      beforeEach(async function () {
+        this.amount1 = BN(2000).mul(BN18)
+        this.amount2 = BN(3000).mul(BN18)
+        this.total = this.amount1.add(this.amount2)
+        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount1)
+        await this.brinkVote_owner1.grant(this.grantee1.address, this.amount2)
+      })
+      it('should add to the address balance', async function () {
+        expect(await this.brinkVote.balanceOf(this.grantee1.address)).to.equal(this.total)
+      })
+      it('should increase totalSupply', async function () {
+        expect(await this.brinkVote.totalSupply()).to.equal(this.total)
+      })
+    })
+
     describe('when called by a non-owner', function () {
       it('should revert with NOT_OWNER', async function () {
         this.amount1 = BN(2000).mul(BN18)
